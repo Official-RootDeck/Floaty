@@ -1,0 +1,29 @@
+FLOATY v1.4.06
+=========================================
+High-Performance Floating Capture Engine
+Designed for Android 5.0 (API 21) -> Android 16 (API 36)
+
+Architecture & Specifications:
+-----------------------------------------
+* Single-use MediaProjection architecture (API 34+ compliant)
+* Dual-mode Foreground Service:
+  - SpecialUse FGS for persistent overlay controls
+  - MediaProjection FGS for hardware screen capture
+* ImageReader with GPU rowStride byte padding alignment
+* Direct SAF (Storage Access Framework) document tree persistence
+* No analytics, diagnostic services, or device telemetry are collected or uploaded.
+
+Keyboard Shortcuts:
+-----------------------------------------
+* Ctrl + Alt + R : Start Screen Recording
+* Ctrl + Alt + S : Stop Screen Recording
+
+Storage & Privacy:
+-----------------------------------------
+* No background surveillance or unsolicited tracking.
+* Only explicit user captures are written to chosen SAF directories.
+* Bug reports are created directly on the official GitHub repository; Floaty does not attach device diagnostics.
+
+Links & Community:
+-----------------------------------------
+{contact_developer={mailto:niror.rahman@gmail.com}},{support_us={https://github.com}}

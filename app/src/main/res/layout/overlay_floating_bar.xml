@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/overlayContainer"
+    android:layout_width="wrap_content"
+    android:layout_height="40dp"
+    android:background="@drawable/bg_floating_pill"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
+
+    <!-- CAMERA / SCREENSHOT BUTTON (Always Visible) -->
+    <ImageView
+        android:id="@+id/btnScreenshot"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="Take Screenshot"
+        android:focusable="true"
+        android:padding="6dp"
+        android:src="@drawable/ic_camera_screenshot" />
+
+    <!-- DIVIDER 1 -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="#334155" />
+
+    <!-- IDLE STATE RECORD BUTTON (Visible when NOT recording) -->
+    <ImageView
+        android:id="@+id/btnStartRecord"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="Start Recording"
+        android:focusable="true"
+        android:padding="6dp"
+        android:src="@drawable/ic_record_dot_idle"
+        android:visibility="visible" />
+
+    <!-- RECORDING CONTROLS CONTAINER (Visible ONLY during recording) -->
+    <LinearLayout
+        android:id="@+id/recordingControlsGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <!-- ACTIVE RECORD INDICATOR (Blinking Red Ring) -->
+        <ImageView
+            android:id="@+id/imgRecIndicator"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_rec_dot_active" />
+
+        <!-- PAUSE / RESUME BUTTON -->
+        <ImageView
+            android:id="@+id/btnPauseResumeRecord"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Pause/Resume Recording"
+            android:focusable="true"
+            android:padding="6dp"
+            android:src="@drawable/ic_pause" />
+
+        <!-- DIVIDER 2 -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:background="#334155" />
+
+        <!-- STOP RECORDING BUTTON -->
+        <ImageView
+            android:id="@+id/btnStopRecord"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Stop Recording"
+            android:focusable="true"
+            android:padding="6dp"
+            android:src="@drawable/ic_stop" />
+
+    </LinearLayout>
+
+</LinearLayout>

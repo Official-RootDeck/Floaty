@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="120dp"
+    android:viewportWidth="200"
+    android:viewportHeight="120">
+    <!-- Background card -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M8,0 L192,0 A8,8 0 0,1 200,8 L200,112 A8,8 0 0,1 192,120 L8,120 A8,8 0 0,1 0,112 L0,8 A8,8 0 0,1 8,0 Z" />
+    <!-- Header bar -->
+    <path
+        android:fillColor="#334155"
+        android:pathData="M0,0 L200,0 L200,32 L0,32 Z" />
+    <!-- 3-dot overflow menu -->
+    <path
+        android:fillColor="#80CBC4"
+        android:pathData="M184,12 A2,2 0 1,1 184,16 A2,2 0 1,1 184,12 Z M184,18 A2,2 0 1,1 184,22 A2,2 0 1,1 184,18 Z M184,24 A2,2 0 1,1 184,28 A2,2 0 1,1 184,24 Z" />
+    <!-- Lock shield icon -->
+    <path
+        android:fillColor="#26A69A"
+        android:pathData="M100,45 L118,52 L118,68 C118,80 110,90 100,95 C90,90 82,80 82,68 L82,52 Z" />
+    <!-- Inner keyhole -->
+    <path
+        android:fillColor="#0F172A"
+        android:pathData="M100,62 A3,3 0 1,1 100,68 L98,78 L102,78 Z" />
+    <!-- Text placeholder line -->
+    <path
+        android:fillColor="#64748B"
+        android:pathData="M24,106 L176,106 L176,110 L24,110 Z" />
+</vector>

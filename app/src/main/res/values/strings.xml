@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Floaty</string>
+    <string name="accessibility_service_description">Allows Floaty to capture instant screenshots directly without repeated permission prompts.</string>
+    <string name="restricted_settings_title">Enable Accessibility Service</string>
+    <string name="restricted_settings_text">If the accessibility settings are grayed out, allow restricted settings first. Find them in App info (top-right menu or App settings).</string>
+    <string name="restricted_settings_open_settings">Allow restricted settings</string>
+    <string name="restricted_settings_open_accessibility">Open accessibility settings</string>
+</resources>
