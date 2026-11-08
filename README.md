@@ -37,19 +37,23 @@ See the application source code for the complete implementation and functionalit
 ## Screenshots
 
 <p align="center">
+  <img src="./screenshots/floaty_feature_graphic_1024x500.png" width="100%" alt="Floaty Feature Graphic">
+</p>
+
+<p align="center">
   <img src="./screenshots/home.png" width="32%" alt="Floaty Home Screen">
+  <img src="./screenshots/permission1.png" width="32%" alt="Floaty Permission Screen 1">
+  <img src="./screenshots/permission2.png" width="32%" alt="Floaty Permission Screen 2">
+</p>
+
+<p align="center">
   <img src="./screenshots/widget.png" width="32%" alt="Floaty Floating Widget">
-  <img src="./screenshots/capture.png" width="32%" alt="Screenshot Capture">
-</p>
-
-<p align="center">
-  <img src="./screenshots/setting2.png" width="32%" alt="Floaty Settings">
-  <img src="./screenshots/permission1.png" width="32%" alt="Floaty Accessibility Permission">
-  <img src="./screenshots/permission2.png" width="32%" alt="Floaty Permission Setup">
-</p>
-
-<p align="center">
   <img src="./screenshots/update.png" width="32%" alt="Floaty Update Screen">
+  <img src="./screenshots/settings%20.png" width="32%" alt="Floaty Settings">
+</p>
+
+<p align="center">
+  <img src="./screenshots/setting2.png" width="32%" alt="Floaty Settings Screen 2">
 </p>
 Getting Started
 
