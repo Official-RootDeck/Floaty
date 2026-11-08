@@ -82,29 +82,6 @@ Generated APK files are available in:
 
 app/build/outputs/apk/
 
-Project Structure
-
-Floaty/
-│
-├── app/
-│   ├── build.gradle.kts
-│   └── src/
-│       └── main/
-│           ├── AndroidManifest.xml
-│           ├── java/
-│           └── res/
-│
-├── gradle/
-│   └── wrapper/
-│
-├── build.gradle.kts
-├── settings.gradle.kts
-├── gradle.properties
-├── gradlew
-├── gradlew.bat
-├── gradle/libs.versions.toml
-├── LICENSE
-└── README.md
 
 Permissions
 
