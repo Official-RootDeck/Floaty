@@ -34,9 +34,22 @@ Features
 
 See the application source code for the complete implementation and functionality.
 
-Screenshots
+## Screenshots
 
-Screenshots will be added here.
+<p align="center">
+  <img src="screenshots/home" width="30%" alt="Floaty Home Screen">
+  <img src="screenshots/widget.png" width="30%" alt="Floaty Floating Widget">
+  <img src="screenshots/capture.png" width="30%" alt="Screenshot Capture">
+</p>
+
+<p align="center">
+  <img src="screenshots/settings.png" width="30%" alt="Floaty Settings">
+	<img src="screenshots/setting2.png" width="30%" alt="Floaty Settings">
+  <img src="screenshots/permission1.png" width="30%" alt=" First Floaty Permission Screen">
+	<img src="screenshots/permission2.png" width="30%" alt="Second Floaty Permission Screen">
+	<img src="screenshots/update.png" width="30%"
+alr="Floaty Update">
+</p>
 
 Getting Started
 
