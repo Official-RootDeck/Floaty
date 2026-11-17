@@ -231,7 +231,21 @@ class FloatyService : Service() {
 
         when (targetAction) {
             ACTION_CAPTURE_SCREENSHOT -> executeProjectionScreenshot(projection)
-            else -> executeRecording(projection)
+            ACTION_START_RECORDING -> executeRecording(projection)
+            else -> {
+                // A projection grant is single-use and must only be consumed for
+                // an explicitly requested capture action. Never treat a missing or
+                // unknown action as an implicit recording request.
+                try {
+                    projection.stop()
+                } catch (error: Exception) {
+                    Log.w(TAG, "Could not release unused projection", error)
+                }
+                if (currentProjection === projection) currentProjection = null
+                overlayController.unhide()
+                startInForeground(isProjectionActive = false, statusText = "Floaty active")
+                Log.w(TAG, "Rejected projection request with unknown target action")
+            }
         }
     }
 
