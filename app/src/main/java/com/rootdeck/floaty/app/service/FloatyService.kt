@@ -194,7 +194,14 @@ class FloatyService : Service() {
     }
 
     private fun initProjectionAndExecute(resultCode: Int, data: Intent, targetAction: String?) {
-        startInForeground(isProjectionActive = true, statusText = "Capture ready")
+        // Keep the microphone foreground-service type active when audio recording was
+        // requested and permission is still granted. Dropping this type here can make
+        // MediaRecorder lose microphone access on Android 14+.
+        startInForeground(
+            isProjectionActive = true,
+            isMicrophoneActive = targetAction == ACTION_START_RECORDING && settingsSafeRecordAudio(),
+            statusText = "Capture ready"
+        )
 
         val mpManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         val projection = try {
