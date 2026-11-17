@@ -27,6 +27,8 @@ class RecorderEngine(private val context: Context) {
     private var mediaRecorder: MediaRecorder? = null
     private var virtualDisplay: VirtualDisplay? = null
     private var currentPfd: ParcelFileDescriptor? = null
+    private var activeDocument: androidx.documentfile.provider.DocumentFile? = null
+    private var activeLocalFile: File? = null
     var isRecording: Boolean = false
         private set
     var isRecordingAudio: Boolean = false
@@ -159,7 +161,11 @@ class RecorderEngine(private val context: Context) {
             recorder.start()
             this.isRecording = true
             this.isRecordingAudio = shouldRecordAudio
-            // Retain the completed output document/file; only failed starts remove it.
+            // Keep the destination until stop() succeeds. If MediaRecorder.stop()
+            // fails (for example, a very short/invalid capture), remove the corrupt
+            // partial MP4 instead of leaving a misleading file in the user's folder.
+            activeDocument = createdDocument
+            activeLocalFile = createdLocalFile
             createdDocument = null
             createdLocalFile = null
             onStarted(true)
@@ -173,9 +179,13 @@ class RecorderEngine(private val context: Context) {
     }
 
     fun stopRecording() {
+        var stopSucceeded = false
         try {
             mediaRecorder?.stop()
-        } catch (_: Exception) {}
+            stopSucceeded = true
+        } catch (error: Exception) {
+            Log.w("RecorderEngine", "Recorder produced no valid finalized output", error)
+        }
 
         try {
             mediaRecorder?.reset()
@@ -190,14 +200,20 @@ class RecorderEngine(private val context: Context) {
             currentPfd?.close()
         } catch (_: Exception) {}
 
+        if (!stopSucceeded) {
+            try { activeDocument?.delete() } catch (_: Exception) {}
+            try { activeLocalFile?.delete() } catch (_: Exception) {}
+        } else if (isRecording) {
+            SettingsRepo(context).incrementVideos()
+        }
+
         mediaRecorder = null
         virtualDisplay = null
         currentPfd = null
+        activeDocument = null
+        activeLocalFile = null
         isRecordingAudio = false
-        if (isRecording) {
-            isRecording = false
-            SettingsRepo(context).incrementVideos()
-        }
+        isRecording = false
     }
 
     fun pauseRecording() {
