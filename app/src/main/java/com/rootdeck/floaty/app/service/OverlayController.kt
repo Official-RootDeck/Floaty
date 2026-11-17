@@ -137,7 +137,7 @@ class OverlayController(
                         p.x = initialX + dx
                         p.y = initialY + dy
                         try {
-                            wm.updateViewLayout(view, p)
+                            rootView?.let { wm.updateViewLayout(it, p) }
                         } catch (_: Exception) {}
                         true
                     } else {
