@@ -154,6 +154,10 @@ class OverlayController(
                     }
                 }
                 MotionEvent.ACTION_CANCEL -> {
+                    if (isDragging) {
+                        settings.overlayX = p.x
+                        settings.overlayY = p.y
+                    }
                     isDragging = false
                     true
                 }
@@ -212,13 +216,17 @@ class OverlayController(
     }
 
     fun remove() {
-        if (rootView != null) {
+        val view = rootView
+        rootView = null
+        barViewController = null
+        params = null
+        isVisible = false
+        if (view != null) {
             try {
-                wm.removeView(rootView)
-            } catch (_: Exception) {}
-            rootView = null
-            barViewController = null
-            isVisible = false
+                wm.removeViewImmediate(view)
+            } catch (_: Exception) {
+                // The window may already have been detached by the system.
+            }
         }
     }
 }
