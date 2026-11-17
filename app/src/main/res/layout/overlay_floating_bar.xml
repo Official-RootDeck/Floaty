@@ -9,6 +9,17 @@
     android:paddingStart="8dp"
     android:paddingEnd="8dp">
 
+    <!-- Dedicated drag handle: keeps button taps separate from window movement. -->
+    <TextView
+        android:id="@+id/dragHandle"
+        android:layout_width="24dp"
+        android:layout_height="32dp"
+        android:gravity="center"
+        android:contentDescription="Move Floaty controls"
+        android:text="⠿"
+        android:textColor="#CBD5E1"
+        android:textSize="18sp" />
+
     <!-- CAMERA / SCREENSHOT BUTTON (Always Visible) -->
     <ImageView
         android:id="@+id/btnScreenshot"

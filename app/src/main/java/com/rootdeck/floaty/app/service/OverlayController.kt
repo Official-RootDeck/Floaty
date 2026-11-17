@@ -96,7 +96,7 @@ class OverlayController(
             }
         )
 
-        setupDrag(view)
+        setupDrag(view.findViewById(R.id.dragHandle))
 
         try {
             wm.addView(view, params)
@@ -111,14 +111,14 @@ class OverlayController(
         }
     }
 
-    private fun setupDrag(view: View) {
+    private fun setupDrag(handle: View) {
         var initialX = 0
         var initialY = 0
         var initialTouchX = 0f
         var initialTouchY = 0f
         var isDragging = false
 
-        view.setOnTouchListener { _, event ->
+        handle.setOnTouchListener { _, event ->
             val p = params ?: return@setOnTouchListener false
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -127,7 +127,7 @@ class OverlayController(
                     initialTouchX = event.rawX
                     initialTouchY = event.rawY
                     isDragging = false
-                    false
+                    true
                 }
                 MotionEvent.ACTION_MOVE -> {
                     val dx = (event.rawX - initialTouchX).toInt()
@@ -137,11 +137,11 @@ class OverlayController(
                         p.x = initialX + dx
                         p.y = initialY + dy
                         try {
-                            wm.updateViewLayout(view, p)
+                            rootView?.let { wm.updateViewLayout(it, p) }
                         } catch (_: Exception) {}
                         true
                     } else {
-                        false
+                        true
                     }
                 }
                 MotionEvent.ACTION_UP -> {
@@ -150,8 +150,12 @@ class OverlayController(
                         settings.overlayY = p.y
                         true
                     } else {
-                        false
+                        true
                     }
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    isDragging = false
+                    true
                 }
                 else -> false
             }
