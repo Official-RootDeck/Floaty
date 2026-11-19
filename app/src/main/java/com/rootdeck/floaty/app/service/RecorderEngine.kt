@@ -47,7 +47,7 @@ class RecorderEngine(private val context: Context) {
             "hd" -> 1280 to 720
             else -> {
                 // Preserve display orientation and aspect ratio while limiting size.
-                val scale = minOf(1f, 1920f / maxW, 1080f / maxH)
+                val scale = minOf(1f, 1920f / maxW, 1920f / maxH)
                 val width = (maxW * scale).toInt().coerceAtLeast(2) and -2
                 val height = (maxH * scale).toInt().coerceAtLeast(2) and -2
                 width to height
