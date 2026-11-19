@@ -74,7 +74,6 @@ Build Debug APK
 
 Linux / macOS
 
-chmod +x gradlew
 ./gradlew assembleDebug
 
 Windows
