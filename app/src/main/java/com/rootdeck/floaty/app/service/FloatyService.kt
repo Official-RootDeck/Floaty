@@ -388,12 +388,15 @@ class FloatyService : Service() {
             }
 
             var fallbackStarted = false
+            var nativeErrorShown = false
             fun startFallbackOnce() {
                 if (fallbackStarted) return
                 fallbackStarted = true
                 fallbackToProjection()
             }
             fun showNativeError(message: String) {
+                if (nativeErrorShown) return
+                nativeErrorShown = true
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 overlayController.unhide()
             }
