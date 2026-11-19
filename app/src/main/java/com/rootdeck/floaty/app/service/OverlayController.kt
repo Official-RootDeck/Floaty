@@ -50,9 +50,15 @@ class OverlayController(
             WindowManager.LayoutParams.TYPE_PHONE
         }
 
+        val sizeScale = when (settings.iconSize.lowercase()) {
+            "small" -> 0.8f
+            "large" -> 1.25f
+            else -> 1f
+        }
+        val overlayHeight = (40 * context.resources.displayMetrics.density * sizeScale).toInt()
         params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
+            overlayHeight,
             windowType,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                     WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
