@@ -40,8 +40,6 @@ class RecorderEngine(private val context: Context) {
         @Suppress("DEPRECATION")
         wm.defaultDisplay.getRealMetrics(dm)
 
-        val maxW = minOf(dm.widthPixels, 1920).coerceAtLeast(2)
-        val maxH = minOf(dm.heightPixels, 1080).coerceAtLeast(2)
         return when (mode.lowercase()) {
             "sd" -> 720 to 480
             "hd" -> 1280 to 720
