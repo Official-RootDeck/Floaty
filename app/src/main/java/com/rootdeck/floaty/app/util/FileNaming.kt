@@ -24,7 +24,12 @@ fun formatFileName(context: Context, fileNamePattern: String, date: Date = Date(
     val timeStamp: String = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(date)
     val counter = SettingsRepo(context).screenshotCount.toString()
 
-    var fileName = fileNamePattern.replace("%timestamp%", timeStamp)
+    val dateToken = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(date)
+    val timeToken = SimpleDateFormat("HH-mm-ss", Locale.US).format(date)
+    var fileName = fileNamePattern
+        .replace("%timestamp%", timeStamp)
+        .replace("%date%", dateToken)
+        .replace("%time%", timeToken)
     fileName = fileName.replace("%counter%", counter.padStart(max(5, counter.length), '0'))
     while (fileName.contains("%randint%")) {
         val randInt = Random.nextInt(0, Int.MAX_VALUE).toString()
