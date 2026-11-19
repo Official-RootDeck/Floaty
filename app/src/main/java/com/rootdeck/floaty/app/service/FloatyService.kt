@@ -381,24 +381,30 @@ class FloatyService : Service() {
         overlayController.hide()
         // Wait 80ms for WindowManager and SurfaceFlinger to remove the overlay window from the display buffer
         mainHandler.postDelayed({
+            // Legacy explicitly requests MediaProjection. Native and Auto use Accessibility
+            // when available; Auto falls back if the service is unavailable or capture fails.
+            if (settings.captureMethod.equals("legacy", ignoreCase = true)) {
+                fallbackToProjection()
+                return@postDelayed
+            }
+
+            var fallbackStarted = false
+            fun startFallbackOnce() {
+                if (fallbackStarted) return
+                fallbackStarted = true
+                fallbackToProjection()
+            }
+
             val dispatched = NativeScreenshotEngine.tryNativeCapture(
                 context = this,
                 onCaptured = {
-                    mainHandler.post {
-                        overlayController.unhide()
-                    }
+                    mainHandler.post { overlayController.unhide() }
                 },
                 onDone = { ok ->
-                    if (!ok) {
-                        mainHandler.post {
-                            fallbackToProjection()
-                        }
-                    }
+                    if (!ok) mainHandler.post { startFallbackOnce() }
                 }
             )
-            if (!dispatched) {
-                fallbackToProjection()
-            }
+            if (!dispatched) startFallbackOnce()
         }, 80L)
     }
 
