@@ -69,6 +69,7 @@ class OverlayController(
 
         barViewController = OverlayBarViewController(
             rootView = view,
+            iconSize = settings.iconSize,
             listener = object : OverlayBarViewController.OverlayActionListener {
                 override fun onTakeScreenshot() {
                     triggerHaptic()
