@@ -74,7 +74,6 @@ Build Debug APK
 
 Linux / macOS
 
-chmod +x gradlew
 ./gradlew assembleDebug
 
 Windows
@@ -154,7 +153,7 @@ You are free to:
 
 Attribution is required. Copies or substantial portions of the software must include the original copyright notice and MIT License text.
 
-See the "LICENSE" (LICENSE) file for the complete license.
+See the `LICENSE` file for the complete license.
 
 Credits
 

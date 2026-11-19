@@ -381,23 +381,39 @@ class FloatyService : Service() {
         overlayController.hide()
         // Wait 80ms for WindowManager and SurfaceFlinger to remove the overlay window from the display buffer
         mainHandler.postDelayed({
+            val mode = settings.captureMethod.lowercase()
+            if (mode == "legacy") {
+                fallbackToProjection()
+                return@postDelayed
+            }
+
+            var fallbackStarted = false
+            var nativeErrorShown = false
+            fun startFallbackOnce() {
+                if (fallbackStarted) return
+                fallbackStarted = true
+                fallbackToProjection()
+            }
+            fun showNativeError(message: String) {
+                if (nativeErrorShown) return
+                nativeErrorShown = true
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                overlayController.unhide()
+            }
+
             val dispatched = NativeScreenshotEngine.tryNativeCapture(
                 context = this,
-                onCaptured = {
-                    mainHandler.post {
-                        overlayController.unhide()
-                    }
-                },
+                onCaptured = { mainHandler.post { overlayController.unhide() } },
                 onDone = { ok ->
-                    if (!ok) {
-                        mainHandler.post {
-                            fallbackToProjection()
-                        }
+                    if (!ok) mainHandler.post {
+                        if (mode == "auto") startFallbackOnce()
+                        else showNativeError("Native screenshot failed")
                     }
                 }
             )
             if (!dispatched) {
-                fallbackToProjection()
+                if (mode == "auto") startFallbackOnce()
+                else showNativeError("Enable Floaty Accessibility to use Native capture")
             }
         }, 80L)
     }
@@ -453,7 +469,7 @@ class FloatyService : Service() {
 
     fun stopRecording() {
         if (!recorderEngine.isRecording) return
-        recorderEngine.stopRecording()
+        val saved = recorderEngine.stopRecording()
         overlayController.setRecordingState(false)
         overlayController.unhide()
 
@@ -463,7 +479,7 @@ class FloatyService : Service() {
         currentProjection = null
 
         startInForeground(isProjectionActive = false, statusText = "Floaty active")
-        Toast.makeText(this, "Recording saved", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, if (saved) "Recording saved" else "Recording failed to save", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {

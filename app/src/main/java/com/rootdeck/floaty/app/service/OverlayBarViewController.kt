@@ -1,13 +1,17 @@
 package com.rootdeck.floaty.app.service
 
 import android.view.View
+import android.os.Build
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.view.ViewGroup
+import android.util.TypedValue
 import com.rootdeck.floaty.R
 
 class OverlayBarViewController(
     private val rootView: View,
-    private val listener: OverlayActionListener
+    private val listener: OverlayActionListener,
+    iconSize: String = "medium"
 ) {
     interface OverlayActionListener {
         fun onTakeScreenshot()
@@ -27,6 +31,26 @@ class OverlayBarViewController(
     private var isPaused = false
 
     init {
+        val scale = when (iconSize.lowercase()) {
+            "small" -> 0.8f
+            "large" -> 1.25f
+            else -> 1f
+        }
+        val density = rootView.resources.displayMetrics.density
+        fun setSize(view: View, widthDp: Int, heightDp: Int) {
+            view.layoutParams = view.layoutParams.apply {
+                width = (widthDp * scale * density).toInt()
+                height = (heightDp * scale * density).toInt()
+            }
+        }
+        setSize(btnScreenshot, 32, 32)
+        setSize(btnStartRecord, 32, 32)
+        setSize(btnPauseResumeRecord, 32, 32)
+        setSize(btnStopRecord, 32, 32)
+        // MediaRecorder pause/resume is only supported on Android 7.0+.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            btnPauseResumeRecord.visibility = View.GONE
+        }
         btnScreenshot.setOnClickListener { listener.onTakeScreenshot() }
         btnStartRecord.setOnClickListener { listener.onStartRecording() }
         btnPauseResumeRecord.setOnClickListener {

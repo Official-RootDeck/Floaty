@@ -40,12 +40,19 @@ class RecorderEngine(private val context: Context) {
         @Suppress("DEPRECATION")
         wm.defaultDisplay.getRealMetrics(dm)
 
-        val maxW = minOf(dm.widthPixels, 1920)
-        val maxH = minOf(dm.heightPixels, 1080)
         return when (mode.lowercase()) {
             "sd" -> 720 to 480
             "hd" -> 1280 to 720
-            else -> if (maxH >= 1080) 1920 to 1080 else maxW to maxH
+            else -> {
+                // Preserve the current display orientation and aspect ratio while
+                // capping the recording at 1920x1080. MediaRecorder dimensions
+                // must be even for common AVC encoders.
+                val longestSide = maxOf(dm.widthPixels, dm.heightPixels).coerceAtLeast(1)
+                val scale = minOf(1920f / longestSide, 1f)
+                val w = (dm.widthPixels * scale).toInt().coerceAtLeast(2) and -2
+                val h = (dm.heightPixels * scale).toInt().coerceAtLeast(2) and -2
+                w to h
+            }
         }
     }
 
@@ -178,7 +185,7 @@ class RecorderEngine(private val context: Context) {
         }
     }
 
-    fun stopRecording() {
+    fun stopRecording(): Boolean {
         var stopSucceeded = false
         try {
             mediaRecorder?.stop()
@@ -214,6 +221,7 @@ class RecorderEngine(private val context: Context) {
         activeLocalFile = null
         isRecordingAudio = false
         isRecording = false
+        return stopSucceeded
     }
 
     fun pauseRecording() {
