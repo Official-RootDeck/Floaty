@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.util.DisplayMetrics
 import com.rootdeck.floaty.R
 import com.rootdeck.floaty.app.prefs.SettingsRepo
 import kotlin.math.abs
@@ -134,10 +135,16 @@ class OverlayController(
                     val dy = (event.rawY - initialTouchY).toInt()
                     if (abs(dx) > 12 || abs(dy) > 12) {
                         isDragging = true
-                        p.x = initialX + dx
-                        p.y = initialY + dy
+                        val metrics = DisplayMetrics()
+                        @Suppress("DEPRECATION")
+                        wm.defaultDisplay.getRealMetrics(metrics)
+                        val view = rootView
+                        val maxX = (metrics.widthPixels - (view?.width ?: 0)).coerceAtLeast(0)
+                        val maxY = (metrics.heightPixels - (view?.height ?: 0)).coerceAtLeast(0)
+                        p.x = (initialX + dx).coerceIn(0, maxX)
+                        p.y = (initialY + dy).coerceIn(0, maxY)
                         try {
-                            rootView?.let { wm.updateViewLayout(it, p) }
+                            view?.let { wm.updateViewLayout(it, p) }
                         } catch (_: Exception) {}
                         true
                     } else {
