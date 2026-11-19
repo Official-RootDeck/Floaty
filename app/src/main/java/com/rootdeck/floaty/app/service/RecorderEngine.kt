@@ -184,7 +184,12 @@ class RecorderEngine(private val context: Context) {
         }
     }
 
-    fun stopRecording() {
+    fun stopRecording(): Boolean {
+        if (mediaRecorder == null) {
+            isRecording = false
+            isRecordingAudio = false
+            return false
+        }
         var stopSucceeded = false
         try {
             mediaRecorder?.stop()
@@ -220,27 +225,28 @@ class RecorderEngine(private val context: Context) {
         activeLocalFile = null
         isRecordingAudio = false
         isRecording = false
+        return stopSucceeded
     }
 
-    fun pauseRecording() {
-        if (!isRecording) return
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mediaRecorder?.pause()
-            }
+    fun pauseRecording(): Boolean {
+        if (!isRecording || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return false
+        return try {
+            mediaRecorder?.pause()
+            true
         } catch (e: Exception) {
             Log.e("RecorderEngine", "Failed to pause recording", e)
+            false
         }
     }
 
-    fun resumeRecording() {
-        if (!isRecording) return
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mediaRecorder?.resume()
-            }
+    fun resumeRecording(): Boolean {
+        if (!isRecording || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return false
+        return try {
+            mediaRecorder?.resume()
+            true
         } catch (e: Exception) {
             Log.e("RecorderEngine", "Failed to resume recording", e)
+            false
         }
     }
 }
