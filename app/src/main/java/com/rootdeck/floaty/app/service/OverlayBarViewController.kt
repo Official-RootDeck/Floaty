@@ -47,9 +47,6 @@ class OverlayBarViewController(
         setSize(btnStartRecord, 32, 32)
         setSize(btnPauseResumeRecord, 32, 32)
         setSize(btnStopRecord, 32, 32)
-        rootView.layoutParams = rootView.layoutParams?.apply {
-            height = (40 * scale * density).toInt()
-        }
         // MediaRecorder pause/resume is only supported on Android 7.0+.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             btnPauseResumeRecord.visibility = View.GONE
