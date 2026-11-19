@@ -1,7 +1,6 @@
 package com.rootdeck.floaty.app.capture
 
 import android.content.Context
-import com.rootdeck.floaty.app.prefs.SettingsRepo
 
 object NativeScreenshotEngine {
     /**
@@ -13,7 +12,6 @@ object NativeScreenshotEngine {
         onCaptured: () -> Unit = {}
     ): Boolean {
         val svc = ScreenshotAccessibilityService.instance ?: return false
-        val settings = SettingsRepo(context)
 
         // Native/Auto use the direct screenshot callback on Android 11+.
         // System-default screenshots are reserved for explicit legacy mode.
