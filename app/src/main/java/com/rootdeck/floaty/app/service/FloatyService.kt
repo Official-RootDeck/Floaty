@@ -459,7 +459,7 @@ class FloatyService : Service() {
 
     fun stopRecording() {
         if (!recorderEngine.isRecording) return
-        recorderEngine.stopRecording()
+        val saved = recorderEngine.stopRecording()
         overlayController.setRecordingState(false)
         overlayController.unhide()
 
@@ -469,7 +469,7 @@ class FloatyService : Service() {
         currentProjection = null
 
         startInForeground(isProjectionActive = false, statusText = "Floaty active")
-        Toast.makeText(this, "Recording saved", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, if (saved) "Recording saved" else "Recording failed to save", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {
