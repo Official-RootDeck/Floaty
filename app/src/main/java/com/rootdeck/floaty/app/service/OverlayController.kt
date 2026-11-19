@@ -20,8 +20,8 @@ class OverlayController(
     private val context: Context,
     private val onScreenshotClick: () -> Unit,
     private val onStartRecording: () -> Unit,
-    private val onPauseRecording: () -> Unit,
-    private val onResumeRecording: () -> Unit,
+    private val onPauseRecording: () -> Boolean,
+    private val onResumeRecording: () -> Boolean,
     private val onStopRecording: () -> Unit
 ) {
 
