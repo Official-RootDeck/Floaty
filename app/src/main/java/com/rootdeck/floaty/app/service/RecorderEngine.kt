@@ -49,8 +49,8 @@ class RecorderEngine(private val context: Context) {
                 // Preserve the current display orientation and aspect ratio while
                 // capping the recording at 1920x1080. MediaRecorder dimensions
                 // must be even for common AVC encoders.
-                val scale = minOf(1920f / dm.widthPixels.coerceAtLeast(1),
-                    1080f / dm.heightPixels.coerceAtLeast(1), 1f)
+                val longestSide = maxOf(dm.widthPixels, dm.heightPixels).coerceAtLeast(1)
+                val scale = minOf(1920f / longestSide, 1f)
                 val w = (dm.widthPixels * scale).toInt().coerceAtLeast(2) and -2
                 val h = (dm.heightPixels * scale).toInt().coerceAtLeast(2) and -2
                 w to h
