@@ -440,19 +440,21 @@ class FloatyService : Service() {
         }
     }
 
-    fun pauseRecording() {
-        recorderEngine.pauseRecording()
-        Toast.makeText(this, "Recording paused", Toast.LENGTH_SHORT).show()
+    fun pauseRecording(): Boolean {
+        val paused = recorderEngine.pauseRecording()
+        if (paused) Toast.makeText(this, "Recording paused", Toast.LENGTH_SHORT).show()
+        return paused
     }
 
-    fun resumeRecording() {
-        recorderEngine.resumeRecording()
-        Toast.makeText(this, "Recording resumed", Toast.LENGTH_SHORT).show()
+    fun resumeRecording(): Boolean {
+        val resumed = recorderEngine.resumeRecording()
+        if (resumed) Toast.makeText(this, "Recording resumed", Toast.LENGTH_SHORT).show()
+        return resumed
     }
 
     fun stopRecording() {
         if (!recorderEngine.isRecording) return
-        recorderEngine.stopRecording()
+        val saved = recorderEngine.stopRecording()
         overlayController.setRecordingState(false)
         overlayController.unhide()
 
@@ -462,7 +464,7 @@ class FloatyService : Service() {
         currentProjection = null
 
         startInForeground(isProjectionActive = false, statusText = "Floaty active")
-        Toast.makeText(this, "Recording saved", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, if (saved) "Recording saved" else "Recording failed; incomplete file removed", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {
