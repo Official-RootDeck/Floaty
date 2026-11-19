@@ -40,12 +40,18 @@ class RecorderEngine(private val context: Context) {
         @Suppress("DEPRECATION")
         wm.defaultDisplay.getRealMetrics(dm)
 
-        val maxW = minOf(dm.widthPixels, 1920)
-        val maxH = minOf(dm.heightPixels, 1080)
+        val maxW = dm.widthPixels.coerceAtLeast(2)
+        val maxH = dm.heightPixels.coerceAtLeast(2)
         return when (mode.lowercase()) {
             "sd" -> 720 to 480
             "hd" -> 1280 to 720
-            else -> if (maxH >= 1080) 1920 to 1080 else maxW to maxH
+            else -> {
+                // Preserve display orientation and aspect ratio while limiting size.
+                val scale = minOf(1f, 1920f / maxW, 1920f / maxH)
+                val width = (maxW * scale).toInt().coerceAtLeast(2) and -2
+                val height = (maxH * scale).toInt().coerceAtLeast(2) and -2
+                width to height
+            }
         }
     }
 
@@ -178,7 +184,12 @@ class RecorderEngine(private val context: Context) {
         }
     }
 
-    fun stopRecording() {
+    fun stopRecording(): Boolean {
+        if (mediaRecorder == null) {
+            isRecording = false
+            isRecordingAudio = false
+            return false
+        }
         var stopSucceeded = false
         try {
             mediaRecorder?.stop()
@@ -214,27 +225,28 @@ class RecorderEngine(private val context: Context) {
         activeLocalFile = null
         isRecordingAudio = false
         isRecording = false
+        return stopSucceeded
     }
 
-    fun pauseRecording() {
-        if (!isRecording) return
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mediaRecorder?.pause()
-            }
+    fun pauseRecording(): Boolean {
+        if (!isRecording || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return false
+        return try {
+            mediaRecorder?.pause()
+            true
         } catch (e: Exception) {
             Log.e("RecorderEngine", "Failed to pause recording", e)
+            false
         }
     }
 
-    fun resumeRecording() {
-        if (!isRecording) return
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mediaRecorder?.resume()
-            }
+    fun resumeRecording(): Boolean {
+        if (!isRecording || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return false
+        return try {
+            mediaRecorder?.resume()
+            true
         } catch (e: Exception) {
             Log.e("RecorderEngine", "Failed to resume recording", e)
+            false
         }
     }
 }

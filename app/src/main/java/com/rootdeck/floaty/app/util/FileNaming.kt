@@ -24,7 +24,12 @@ fun formatFileName(context: Context, fileNamePattern: String, date: Date = Date(
     val timeStamp: String = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(date)
     val counter = SettingsRepo(context).screenshotCount.toString()
 
-    var fileName = fileNamePattern.replace("%timestamp%", timeStamp)
+    val dateToken = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(date)
+    val timeToken = SimpleDateFormat("HH-mm-ss", Locale.US).format(date)
+    var fileName = fileNamePattern
+        .replace("%timestamp%", timeStamp)
+        .replace("%date%", dateToken)
+        .replace("%time%", timeToken)
     fileName = fileName.replace("%counter%", counter.padStart(max(5, counter.length), '0'))
     while (fileName.contains("%randint%")) {
         val randInt = Random.nextInt(0, Int.MAX_VALUE).toString()
@@ -34,14 +39,15 @@ fun formatFileName(context: Context, fileNamePattern: String, date: Date = Date(
     while (fileName.contains("%random%")) {
         fileName = fileName.replaceFirst("%random%", UUID.randomUUID().toString())
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (fileName.contains("%app%") || fileName.contains("%package%"))) {
-        val service = ScreenshotAccessibilityService.instance
-        val packageName = service?.getForegroundPackageName() ?: ""
-        fileName = fileName.replace("%package%", sanitizeFilename(packageName))
-        if (fileName.contains("%app%")) {
-            val appLabel = resolveAppLabel(context, packageName)
-            fileName = fileName.replace("%app%", sanitizeFilename(appLabel))
+    if (fileName.contains("%app%") || fileName.contains("%package%")) {
+        val packageName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            ScreenshotAccessibilityService.instance?.getForegroundPackageName().orEmpty()
+        } else {
+            ""
         }
+        fileName = fileName.replace("%package%", sanitizeFilename(packageName))
+        val appLabel = resolveAppLabel(context, packageName)
+        fileName = fileName.replace("%app%", sanitizeFilename(appLabel))
     }
     return sanitizeFilename(fileName)
 }

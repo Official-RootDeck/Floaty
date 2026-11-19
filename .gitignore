@@ -1,0 +1,6 @@
+# Local Android/Gradle configuration
+local.properties
+.gradle/
+**/build/
+*.jks
+*.keystore
