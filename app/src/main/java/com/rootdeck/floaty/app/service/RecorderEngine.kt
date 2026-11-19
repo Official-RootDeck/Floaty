@@ -187,7 +187,7 @@ class RecorderEngine(private val context: Context) {
         }
     }
 
-    fun stopRecording() {
+    fun stopRecording(): Boolean {
         var stopSucceeded = false
         try {
             mediaRecorder?.stop()
@@ -223,6 +223,7 @@ class RecorderEngine(private val context: Context) {
         activeLocalFile = null
         isRecordingAudio = false
         isRecording = false
+        return stopSucceeded
     }
 
     fun pauseRecording() {
