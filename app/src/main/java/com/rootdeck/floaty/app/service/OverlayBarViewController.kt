@@ -1,5 +1,6 @@
 package com.rootdeck.floaty.app.service
 
+import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -12,8 +13,8 @@ class OverlayBarViewController(
     interface OverlayActionListener {
         fun onTakeScreenshot()
         fun onStartRecording()
-        fun onPauseRecording()
-        fun onResumeRecording()
+        fun onPauseRecording(): Boolean
+        fun onResumeRecording(): Boolean
         fun onStopRecording()
     }
 
@@ -29,14 +30,12 @@ class OverlayBarViewController(
     init {
         btnScreenshot.setOnClickListener { listener.onTakeScreenshot() }
         btnStartRecord.setOnClickListener { listener.onStartRecording() }
+        btnPauseResumeRecord.isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+        btnPauseResumeRecord.alpha = if (btnPauseResumeRecord.isEnabled) 1f else 0.45f
         btnPauseResumeRecord.setOnClickListener {
-            if (isPaused) {
-                listener.onResumeRecording()
-                setPausedState(false)
-            } else {
-                listener.onPauseRecording()
-                setPausedState(true)
-            }
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return@setOnClickListener
+            val succeeded = if (isPaused) listener.onResumeRecording() else listener.onPauseRecording()
+            if (succeeded) setPausedState(!isPaused)
         }
         btnStopRecord.setOnClickListener { listener.onStopRecording() }
     }
