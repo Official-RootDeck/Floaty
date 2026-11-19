@@ -39,14 +39,15 @@ fun formatFileName(context: Context, fileNamePattern: String, date: Date = Date(
     while (fileName.contains("%random%")) {
         fileName = fileName.replaceFirst("%random%", UUID.randomUUID().toString())
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (fileName.contains("%app%") || fileName.contains("%package%"))) {
-        val service = ScreenshotAccessibilityService.instance
-        val packageName = service?.getForegroundPackageName() ?: ""
-        fileName = fileName.replace("%package%", sanitizeFilename(packageName))
-        if (fileName.contains("%app%")) {
-            val appLabel = resolveAppLabel(context, packageName)
-            fileName = fileName.replace("%app%", sanitizeFilename(appLabel))
+    if (fileName.contains("%app%") || fileName.contains("%package%")) {
+        val packageName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            ScreenshotAccessibilityService.instance?.getForegroundPackageName().orEmpty()
+        } else {
+            ""
         }
+        fileName = fileName.replace("%package%", sanitizeFilename(packageName))
+        val appLabel = resolveAppLabel(context, packageName)
+        fileName = fileName.replace("%app%", sanitizeFilename(appLabel))
     }
     return sanitizeFilename(fileName)
 }
