@@ -1,6 +1,7 @@
 package com.rootdeck.floaty.app.service
 
 import android.view.View
+import android.os.Build
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.rootdeck.floaty.R
@@ -27,6 +28,10 @@ class OverlayBarViewController(
     private var isPaused = false
 
     init {
+        // MediaRecorder pause/resume is only supported on Android 7.0+.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            btnPauseResumeRecord.visibility = View.GONE
+        }
         btnScreenshot.setOnClickListener { listener.onTakeScreenshot() }
         btnStartRecord.setOnClickListener { listener.onStartRecording() }
         btnPauseResumeRecord.setOnClickListener {
