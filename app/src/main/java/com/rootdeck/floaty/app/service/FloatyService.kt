@@ -379,25 +379,24 @@ class FloatyService : Service() {
 
     private fun executeScreenshot() {
         overlayController.hide()
-        // Wait 80ms for WindowManager and SurfaceFlinger to remove the overlay window from the display buffer
+        val captureMode = settings.captureMethod.lowercase()
+        if (captureMode == "legacy") {
+            fallbackToProjection()
+            return
+        }
+        // Wait for WindowManager to remove the overlay before native capture.
         mainHandler.postDelayed({
             val dispatched = NativeScreenshotEngine.tryNativeCapture(
                 context = this,
                 onCaptured = {
-                    mainHandler.post {
-                        overlayController.unhide()
-                    }
-                },
-                onDone = { ok ->
-                    if (!ok) {
-                        mainHandler.post {
-                            fallbackToProjection()
-                        }
-                    }
+                    mainHandler.post { overlayController.unhide() }
                 }
             )
-            if (!dispatched) {
+            if (!dispatched && captureMode == "auto") {
                 fallbackToProjection()
+            } else if (!dispatched) {
+                overlayController.unhide()
+                Toast.makeText(this, "Native capture unavailable. Enable Floaty's Accessibility Service.", Toast.LENGTH_LONG).show()
             }
         }, 80L)
     }
