@@ -20,8 +20,8 @@ class OverlayController(
     private val context: Context,
     private val onScreenshotClick: () -> Unit,
     private val onStartRecording: () -> Unit,
-    private val onPauseRecording: () -> Unit,
-    private val onResumeRecording: () -> Unit,
+    private val onPauseRecording: () -> Boolean,
+    private val onResumeRecording: () -> Boolean,
     private val onStopRecording: () -> Unit
 ) {
 
@@ -53,8 +53,7 @@ class OverlayController(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             windowType,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.TOP or Gravity.START
@@ -65,6 +64,7 @@ class OverlayController(
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.overlay_floating_bar, null)
         view.alpha = settings.opacity
+        applyIconSize(view)
 
         barViewController = OverlayBarViewController(
             rootView = view,
@@ -111,6 +111,27 @@ class OverlayController(
         }
     }
 
+    private fun applyIconSize(view: View) {
+        val dp = when (settings.iconSize.lowercase()) {
+            "small" -> 28
+            "large" -> 44
+            else -> 36
+        }
+        val px = (dp * context.resources.displayMetrics.density).toInt()
+        val container = view.findViewById<View>(R.id.overlayContainer)
+        container.layoutParams = container.layoutParams.apply { height = px }
+        listOf(R.id.btnScreenshot, R.id.btnStartRecord, R.id.btnPauseResumeRecord, R.id.btnStopRecord).forEach { id ->
+            view.findViewById<View>(id)?.layoutParams = view.findViewById<View>(id).layoutParams.apply {
+                width = px
+                height = px
+            }
+        }
+        view.findViewById<View>(R.id.dragHandle)?.layoutParams?.let { lp ->
+            lp.height = px
+            view.findViewById<View>(R.id.dragHandle).layoutParams = lp
+        }
+    }
+
     private fun setupDrag(handle: View) {
         var initialX = 0
         var initialY = 0
@@ -134,8 +155,13 @@ class OverlayController(
                     val dy = (event.rawY - initialTouchY).toInt()
                     if (abs(dx) > 12 || abs(dy) > 12) {
                         isDragging = true
-                        p.x = initialX + dx
-                        p.y = initialY + dy
+                        val metrics = android.util.DisplayMetrics()
+                        @Suppress("DEPRECATION")
+                        wm.defaultDisplay.getRealMetrics(metrics)
+                        val maxX = (metrics.widthPixels - (rootView?.width ?: handle.rootView.width)).coerceAtLeast(0)
+                        val maxY = (metrics.heightPixels - (rootView?.height ?: handle.rootView.height)).coerceAtLeast(0)
+                        p.x = (initialX + dx).coerceIn(0, maxX)
+                        p.y = (initialY + dy).coerceIn(0, maxY)
                         try {
                             rootView?.let { wm.updateViewLayout(it, p) }
                         } catch (_: Exception) {}
